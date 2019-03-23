@@ -1,4 +1,4 @@
-;;; rust-mode.el --- A major emacs mode for editing Nix source code -*-lexical-binding: t-*-
+;;; nix-mode.el --- A major emacs mode for editing Nix source code -*-lexical-binding: t-*-
 
 ;; Version: 0.0.0
 ;; Package-Version: 0.0.0
@@ -40,12 +40,6 @@
 (defconst nix-re-vis "pub")
 (defconst nix-re-unsafe "unsafe")
 (defconst nix-re-extern "extern")
-(defconst nix-re-union
-  (rx-to-string
-   `(seq
-    (or space line-start)
-    (group symbol-start "union" symbol-end)
-    (+ space) (regexp ,nix-re-ident))))
 
 ;;; Start of a Nix item
 (defvar nix-top-item-beg-re
@@ -492,24 +486,11 @@ buffer."
 
 ;; Font-locking definitions and helpers
 (defconst nix-mode-keywords
-  '("as"
-    "box" "break"
-    "const" "continue" "crate"
-    "do" "dyn"
-    "else" "enum" "extern"
-    "false" "fn" "for"
-    "if" "impl" "in"
-    "let" "loop"
-    "match" "mod" "move" "mut"
-    "priv" "pub"
-    "ref" "return"
-    "self" "static" "struct" "super"
-    "true" "trait" "type"
-    "use"
-    "virtual"
-    "where" "while"
-    "yield"
-    "with" "ret"))
+  '("if" "then"
+    "else" "with"
+    "let" "in"
+    "rec" "inherit"
+    "or"))
 
 (defconst nix-special-types
   '("u8" "i8"
@@ -596,11 +577,12 @@ match data if found. Returns nil if not within a Nix string."
         match))))
 
 (defvar nix-builtin-formatting-macros
-  '("eprint"
-    "eprintln"
-    "format"
-    "print"
-    "println")
+  '("builtins" "baseNameOf"
+    "derivation" "dirOf"
+    "true" "false" "null"
+    "isNull" "toString"
+    "fetchTarball" "import"
+    "map" "removeAttrs")
   "List of builtin Nix macros for string formatting used by `nix-mode-font-lock-keywords'. (`write!' is handled separately.)")
 
 (defvar nix-formatting-macro-opening-re
@@ -619,7 +601,6 @@ match data if found. Returns nil if not within a Nix string."
 
      ;; Contextual keywords
      ("\\_<\\(default\\)[[:space:]]+fn\\_>" 1 font-lock-keyword-face)
-     (,nix-re-union 1 font-lock-keyword-face)
 
      ;; Special types
      (,(regexp-opt nix-special-types 'symbols) . font-lock-type-face)
