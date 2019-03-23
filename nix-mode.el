@@ -1422,9 +1422,7 @@ This is written mainly to be used as `end-of-defun-function' for Nix."
   (add-hook 'before-save-hook 'nix--before-save-hook nil t)
 
   (setq-local nix-buffer-project nil)
-
-  (when nix-always-locate-project-on-open
-    (nix-update-buffer-project)))
+)
 
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.rs\\'" . nix-mode))
