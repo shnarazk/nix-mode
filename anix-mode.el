@@ -1,9 +1,9 @@
-;;; nix-mode.el --- A major emacs mode for editing Nix source code -*-lexical-binding: t-*-
+;;; anix-mode.el --- Another major emacs mode for editing Nix source code -*-lexical-binding: t-*-
 
 ;; Version: 0.0.0
 ;; Package-Version: 0.0.0
 ;; Author: Mozilla
-;; Url: https://github.com/nix-lang/nix-mode
+;; Url: https://github.com/rust-lang/rust-mode
 ;; Keywords: languages
 ;; Package-Requires: ((emacs "24.0"))
 
@@ -1425,7 +1425,7 @@ This is written mainly to be used as `end-of-defun-function' for Nix."
 )
 
 ;;;###autoload
-(add-to-list 'auto-mode-alist '("\\.rs\\'" . nix-mode))
+(add-to-list 'auto-mode-alist '("\\.nix\\'" . nix-mode))
 
 (defun nix-mode-reload ()
   (interactive)
@@ -1480,4 +1480,4 @@ visit the new file."
 
 (provide 'nix-mode)
 
-;;; nix-mode.el ends here
+;;; anix-mode.el ends here
