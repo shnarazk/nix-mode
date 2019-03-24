@@ -526,24 +526,6 @@ buffer."
 
 (defconst nix-re-special-types (regexp-opt nix-special-types 'symbols))
 
-
-(defun nix-path-font-lock-matcher (re-ident)
-  "Matches names like \"foo::\" or \"Foo::\" (depending on RE-IDENT, which should match
-the desired identifiers), but does not match type annotations \"foo::<\"."
-  `(lambda (limit)
-     (catch 'nix-path-font-lock-matcher
-       (while t
-         (let* ((symbol-then-colons (rx-to-string '(seq (group (regexp ,re-ident)) "::")))
-                (match (re-search-forward symbol-then-colons limit t)))
-           (cond
-            ;; If we didn't find a match, there are no more occurrences
-            ;; of foo::, so return.
-            ((null match) (throw 'nix-path-font-lock-matcher nil))
-            ;; If this isn't a type annotation foo::<, we've found a
-            ;; match, so a return it!
-            ((not (looking-at (rx (0+ space) "<")))
-	     (throw 'nix-path-font-lock-matcher match))))))))
-
 (defun nix-next-string-interpolation (limit)
   "Search forward from point for next Nix interpolation marker
 before LIMIT.
@@ -640,12 +622,6 @@ match data if found. Returns nil if not within a Nix string."
 
      ;; Type-inferred binding
      (,(concat "\\_<\\(?:let\\s-+ref\\|let\\|ref\\)\\s-+\\(?:mut\\s-+\\)?" (nix-re-grab nix-re-ident) "\\_>") 1 font-lock-variable-name-face)
-
-     ;; Type names like `Foo::`, highlight excluding the ::
-     (,(nix-path-font-lock-matcher nix-re-uc-ident) 1 font-lock-type-face)
-
-     ;; Module names like `foo::`, highlight excluding the ::
-     (,(nix-path-font-lock-matcher nix-re-lc-ident) 1 font-lock-constant-face)
 
      ;; Lifetimes like `'foo`
      (,(concat "'" (nix-re-grab nix-re-ident) "[^']") 1 font-lock-variable-name-face)
